@@ -18,8 +18,8 @@ class CharactersScreen extends StatefulWidget {
 class _CharactersScreenState extends State<CharactersScreen> {
   late List<CharacterModel> characters;
   late List<CharacterModel> filteredCharacters;
-  bool isFiltered = false; // To track if search is active
-  bool isSearching = false; // To control whether the search bar is visible
+  bool isFiltered = false; //? To track if search is active
+  bool isSearching = false; //? To control whether the search bar is visible
   final _filterController = TextEditingController();
 
   // Build the search TextField widget
@@ -95,6 +95,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
               ),
             );
           }
+         
           return buildGridViewChars(isFiltered
               ? filteredCharacters
               : characters); // Use filtered list if search is active
