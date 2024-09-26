@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rickey_and_morty_adv_app/presentation/widgets/rotating_arcs.dart';
 
 import '../../business_logic/cubit/characters_cubit.dart';
 import '../../constants/colors.dart';
@@ -28,6 +29,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
     return Scaffold(
       appBar: buildAppBarWidget(),
       body: buildBlocBuilderWidget(),
+      backgroundColor: MyColors.myBrownColor,
     );
   }
 
@@ -98,9 +100,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
 
   Center buildLoadingIndicator() {
     return const Center(
-      child: CircularProgressIndicator(
-        color: MyColors.myGreenColor,
-      ),
+      child: RotatingArcs(),
     );
   }
 
