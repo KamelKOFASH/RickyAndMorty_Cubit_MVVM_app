@@ -14,8 +14,6 @@ class CharactersScreen extends StatefulWidget {
 }
 
 class _CharactersScreenState extends State<CharactersScreen> {
-  List<CharacterModel> _characters = []; // Initialize as an empty list
-
   @override
   void initState() {
     super.initState();
