@@ -16,12 +16,59 @@ class CharactersScreen extends StatefulWidget {
 }
 
 class _CharactersScreenState extends State<CharactersScreen> {
+  late List<CharacterModel> characters;
+  late List<CharacterModel> filteredCharacters;
+  bool isFiltered = false; // To track if search is active
+  bool isSearching = false; // To control whether the search bar is visible
+  final _filterController = TextEditingController();
+
+  // Build the search TextField widget
+  Widget _buildFilterTextField() {
+    return TextField(
+      controller: _filterController,
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+        hintText: 'Search...',
+        hintStyle: TextStyle(color: Colors.white, fontSize: 18),
+      ),
+      style: const TextStyle(color: Colors.white),
+      onChanged: (value) {
+        addSearchedOrItemToFilteredList(value);
+      },
+    );
+  }
+
+  //? Search functionality: Filter the characters list based on the query
+  void addSearchedOrItemToFilteredList(String query) {
+    List<CharacterModel> results = [];
+    if (query.isEmpty) {
+      results = characters;
+    } else {
+      results = characters
+          .where((character) =>
+              character.name.toLowerCase().startsWith(query.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      filteredCharacters = results;
+      isFiltered = query.isNotEmpty; // Toggle filtering state
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     context
         .read<CharactersCubit>()
         .fetchCharacters(); // Fetch characters on init
+  }
+
+  @override
+  void dispose() {
+    _filterController
+        .dispose(); // Dispose of controller when the widget is removed
+    super.dispose();
   }
 
   @override
@@ -39,6 +86,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
         if (state is CharacterLoading) {
           return buildLoadingIndicator(); // Show loading indicator
         } else if (state is CharactersLoaded) {
+          characters = state.characters;
           if (state.characters.isEmpty) {
             return const Center(
               child: Text(
@@ -47,8 +95,9 @@ class _CharactersScreenState extends State<CharactersScreen> {
               ),
             );
           }
-          return buildGridViewChars(
-              state.characters); // Pass characters to the builder
+          return buildGridViewChars(isFiltered
+              ? filteredCharacters
+              : characters); // Use filtered list if search is active
         } else if (state is CharactersError) {
           return Center(
             child: Text(
@@ -66,15 +115,17 @@ class _CharactersScreenState extends State<CharactersScreen> {
     return AppBar(
       elevation: 1,
       centerTitle: true,
-      title: const Text(
-        'Rick And Morty',
-        style: TextStyle(
-          color: Colors.blueAccent,
-          fontSize: 34,
-          letterSpacing: 1.5,
-          fontFamily: 'get_schwifty',
-        ),
-      ),
+      title: isSearching // Toggle between title and search field
+          ? _buildFilterTextField()
+          : const Text(
+              'Rick And Morty',
+              style: TextStyle(
+                color: Colors.blueAccent,
+                fontSize: 34,
+                letterSpacing: 1.5,
+                fontFamily: 'get_schwifty',
+              ),
+            ),
       flexibleSpace: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -87,9 +138,18 @@ class _CharactersScreenState extends State<CharactersScreen> {
       backgroundColor: Colors.transparent,
       actions: [
         IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            CupertinoIcons.search,
+          onPressed: () {
+            setState(() {
+              isSearching = !isSearching; // Toggle search mode
+              if (!isSearching) {
+                _filterController
+                    .clear(); // Clear search field when exiting search mode
+                isFiltered = false; // Reset filtered state
+              }
+            });
+          },
+          icon: Icon(
+            isSearching ? Icons.clear : CupertinoIcons.search,
             color: Colors.white,
             size: 28,
           ),
@@ -104,6 +164,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
     );
   }
 
+  // Grid view for displaying characters
   Widget buildGridViewChars(List<CharacterModel> characters) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
