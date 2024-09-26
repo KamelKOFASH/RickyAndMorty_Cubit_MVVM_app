@@ -15,7 +15,7 @@ class CharacterItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 5,
+      elevation: 20,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
         side: const BorderSide(color: Colors.grey, width: 0.5),
@@ -41,14 +41,14 @@ class CharacterItem extends StatelessWidget {
             ),
           ),
 
-          // Name and description
+          //? Name and description
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(
               character.name,
               style: const TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontFamily: 'get_schwifty',
                 color: Colors.black,
               ),
               textAlign: TextAlign.center,

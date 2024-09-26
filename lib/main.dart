@@ -9,7 +9,8 @@ import 'data/services/get_characters_service.dart';
 void main() {
   runApp(
     BlocProvider(
-      create: (context) => CharactersCubit(CharactersRepository(CharactersWebServices())),
+      create: (context) =>
+          CharactersCubit(CharactersRepository(CharactersWebServices())),
       child: RickAndMortyApp(appRouter: AppRouter()),
     ),
   );

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,43 +26,73 @@ class _CharactersScreenState extends State<CharactersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Rick and Morty',
-          style: TextStyle(
-            fontSize: 18,
-            color: MyColors.myBrownColor,
-          ),
-        ),
-        backgroundColor: MyColors.myGreenColor,
-      ),
-      body: BlocBuilder<CharactersCubit, CharactersState>(
-        builder: (context, state) {
-          if (state is CharacterLoading) {
-            return buildLoadingIndicator(); // Show loading indicator
-          } else if (state is CharactersLoaded) {
-            if (state.characters.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No Characters!',
-                  style: TextStyle(color: MyColors.myGreenColor),
-                ),
-              );
-            }
-            return buildGridViewChars(
-                state.characters); // Pass characters to the builder
-          } else if (state is CharactersError) {
-            return Center(
+      appBar: buildAppBarWidget(),
+      body: buildBlocBuilderWidget(),
+    );
+  }
+
+  BlocBuilder<CharactersCubit, CharactersState> buildBlocBuilderWidget() {
+    return BlocBuilder<CharactersCubit, CharactersState>(
+      builder: (context, state) {
+        if (state is CharacterLoading) {
+          return buildLoadingIndicator(); // Show loading indicator
+        } else if (state is CharactersLoaded) {
+          if (state.characters.isEmpty) {
+            return const Center(
               child: Text(
-                state.message,
-                style: const TextStyle(color: MyColors.myBrownColor),
+                'No Characters!',
+                style: TextStyle(color: MyColors.myGreenColor),
               ),
             );
           }
-          return const Center(child: Text('Unexpected state')); // Default case
-        },
+          return buildGridViewChars(
+              state.characters); // Pass characters to the builder
+        } else if (state is CharactersError) {
+          return Center(
+            child: Text(
+              state.message,
+              style: const TextStyle(color: MyColors.myBrownColor),
+            ),
+          );
+        }
+        return const Center(child: Text('Unexpected state')); // Default case
+      },
+    );
+  }
+
+  AppBar buildAppBarWidget() {
+    return AppBar(
+      elevation: 1,
+      centerTitle: true,
+      title: const Text(
+        'Rick And Morty',
+        style: TextStyle(
+          color: Colors.blueAccent,
+          fontSize: 34,
+          letterSpacing: 1.5,
+          fontFamily: 'get_schwifty',
+        ),
       ),
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/images/Rick and Morty Character Design.jpeg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      backgroundColor: Colors.transparent,
+      actions: [
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            CupertinoIcons.search,
+            color: Colors.white,
+            size: 28,
+          ),
+        ),
+      ],
     );
   }
 
