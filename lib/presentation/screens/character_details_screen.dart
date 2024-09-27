@@ -2,9 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:rickey_and_morty_adv_app/business_logic/cubit/locations_cubit.dart';
-import 'package:rickey_and_morty_adv_app/constants/colors.dart';
-import 'package:rickey_and_morty_adv_app/data/models/location_model.dart';
+import '../../business_logic/cubit/locations_cubit.dart';
+import '../../constants/colors.dart';
+import '../../data/models/location_model.dart';
 
 import '../../data/models/character_model.dart';
 
@@ -136,6 +136,12 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
                       color: MyColors.myYellowColor,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                            color: MyColors.myYellowColor,
+                            offset: Offset(0, 0),
+                            blurRadius: 10)
+                      ],
                     )),
               ],
               isRepeatingAnimation: true,

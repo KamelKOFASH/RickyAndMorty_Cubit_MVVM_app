@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:rickey_and_morty_adv_app/data/repositories/repositories.dart';
+import '../../data/repositories/repositories.dart';
 
 import '../../data/models/location_model.dart';
 

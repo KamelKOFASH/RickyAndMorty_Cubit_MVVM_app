@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-import 'package:rickey_and_morty_adv_app/constants/colors.dart';
+import '../../constants/colors.dart';
 
 class RotatingArcs extends StatefulWidget {
   const RotatingArcs({super.key});

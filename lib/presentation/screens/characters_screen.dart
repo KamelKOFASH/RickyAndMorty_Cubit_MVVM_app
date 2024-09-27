@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rickey_and_morty_adv_app/presentation/widgets/rotating_arcs.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+import 'package:lottie/lottie.dart';
+import '../widgets/rotating_arcs.dart';
 
 import '../../business_logic/cubit/characters_cubit.dart';
 import '../../constants/colors.dart';
@@ -75,8 +77,54 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBarWidget(),
-      body: buildBlocBuilderWidget(),
+      body: OfflineBuilder(
+        connectivityBuilder: (BuildContext context,
+            List<ConnectivityResult> connectivityResults, Widget child) {
+          final bool connected =
+              connectivityResults[0] != ConnectivityResult.none;
+          if (connected) {
+            return buildBlocBuilderWidget();
+          } else {
+            return buildOfflineLottieWidget();
+          }
+        },
+        child: const Text(
+          'Check your internet connection',
+          style: TextStyle(color: MyColors.myGreenColor),
+        ),
+      ),
+      //buildBlocBuilderWidget(),
       backgroundColor: MyColors.myBrownColor,
+    );
+  }
+
+  Widget buildOfflineLottieWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset(
+            'assets/animations/offline.json',
+            repeat: true,
+            animate: true,
+            width: 200,
+            height: 200,
+          ),
+          const Text(
+            'Check your internet connection',
+            style: TextStyle(color: MyColors.myGreenColor),
+          ),
+          const SizedBox(height: 20),
+          //? Show retry button
+          MaterialButton(
+            onPressed: () {
+              setState(() {});
+            },
+            color: MyColors.myYellowColor,
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -95,7 +143,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
               ),
             );
           }
-         
+
           return buildGridViewChars(isFiltered
               ? filteredCharacters
               : characters); // Use filtered list if search is active
