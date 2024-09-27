@@ -120,7 +120,7 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
 
   Widget buildListLocationsView(List<LocationModel> locations) {
     return SizedBox(
-      height: 250,
+      height: 300,
       child: ListView.builder(
         itemCount: locations.length,
         itemBuilder: (context, index) {
@@ -131,7 +131,7 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
             ),
             title: AnimatedTextKit(
               animatedTexts: [
-                WavyAnimatedText(locations[index].name,
+                FlickerAnimatedText(locations[index].name,
                     textStyle: const TextStyle(
                       color: MyColors.myYellowColor,
                       fontSize: 14,
