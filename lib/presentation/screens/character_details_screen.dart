@@ -1,12 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:rickey_and_morty_adv_app/business_logic/cubit/locations_cubit.dart';
 import 'package:rickey_and_morty_adv_app/constants/colors.dart';
+import 'package:rickey_and_morty_adv_app/data/models/location_model.dart';
 
 import '../../data/models/character_model.dart';
 
-class CharacterDetailsScreen extends StatelessWidget {
+class CharacterDetailsScreen extends StatefulWidget {
   const CharacterDetailsScreen({super.key, required this.character});
   final CharacterModel character;
+
+  @override
+  State<CharacterDetailsScreen> createState() => _CharacterDetailsScreenState();
+}
+
+class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
+  late List<LocationModel> locations = [];
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<LocationsCubit>(context).fetchLocations();
+  }
+
+  Widget buildListLocationsView(List<LocationModel> locations) {
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        itemCount: locations.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: const Icon(
+              Icons.location_on,
+              color: MyColors.myYellowColor,
+            ),
+            title: Text(locations[index].name),
+            subtitle: Text(locations[index].type),
+            trailing: Text(locations[index].dimension),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +61,24 @@ class CharacterDetailsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    buildCharacterInfo("Status: ", character.status),
+                    buildCharacterInfo("Status: ", widget.character.status),
                     buildDivider(280),
-                    buildCharacterInfo("Species: ", character.species),
+                    buildCharacterInfo("Species: ", widget.character.species),
                     buildDivider(270),
-                    buildCharacterInfo("Gender: ", character.gender),
+                    buildCharacterInfo("Gender: ", widget.character.gender),
                     buildDivider(280),
-                    buildCharacterInfo("Origin: ", character.origin.name),
+                    buildCharacterInfo(
+                        "Origin: ", widget.character.origin.name),
                     buildDivider(290),
-                    buildCharacterInfo("Location: ", character.location.name),
+                    buildCharacterInfo(
+                        "Location: ", widget.character.location.name),
                     buildDivider(250),
                     buildCharacterInfo("No.of times appeared in episode: ",
-                        character.episode.length.toString()),
+                        widget.character.episode.length.toString()),
                     buildDivider(80),
                     const SizedBox(height: 20),
                     Text(
-                      "Created: ${character.name}",
+                      "Created: ${widget.character.name}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 32,
@@ -50,7 +87,7 @@ class CharacterDetailsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      '${DateFormat('dd MMMM yyyy').format(DateTime.parse(character.created))} at ${DateFormat.jm().format(DateTime.parse(character.created))}',
+                      '${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.character.created))} at ${DateFormat.jm().format(DateTime.parse(widget.character.created))}',
                       style: const TextStyle(
                         color: MyColors.myYellowColor,
                         fontSize: 16,
@@ -58,6 +95,30 @@ class CharacterDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     //? Animated Text
+                    const SizedBox(height: 10),
+                    BlocBuilder<LocationsCubit, LocationsState>(
+                      builder: (context, state) {
+                        if (state is LocationsLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: MyColors.myYellowColor,
+                            ),
+                          );
+                        } else if (state is LocationsLoaded) {
+                          locations = state.locations;
+                        } else if (state is LocationsError) {
+                          return Center(
+                            child: Text(
+                              state.message,
+                              style: const TextStyle(
+                                color: MyColors.myYellowColor,
+                              ),
+                            ),
+                          );
+                        }
+                        return buildListLocationsView(locations);
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -102,10 +163,11 @@ class CharacterDetailsScreen extends StatelessWidget {
 
   SliverAppBar buildAppBar() {
     return SliverAppBar(
+      backgroundColor: MyColors.myGreenColor,
       expandedHeight: 300,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
-        title: Text(character.name,
+        title: Text(widget.character.name,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -113,9 +175,9 @@ class CharacterDetailsScreen extends StatelessWidget {
             )),
         centerTitle: true,
         background: Hero(
-          tag: character.id,
+          tag: widget.character.id,
           child: Image.network(
-            character.image,
+            widget.character.image,
             fit: BoxFit.fill,
           ),
         ),

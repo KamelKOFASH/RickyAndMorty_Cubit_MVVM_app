@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'business_logic/cubit/characters_cubit.dart';
+import 'business_logic/cubit/locations_cubit.dart';
 import 'constants/strings.dart';
 import 'data/models/character_model.dart';
-import 'data/repositories/characters_repo.dart';
-import 'data/services/get_characters_service.dart';
+import 'data/repositories/repositories.dart';
+import 'data/services/web_services.dart';
 import 'presentation/screens/character_details_screen.dart';
 import 'presentation/screens/characters_screen.dart';
 
 class AppRouter {
-  late CharactersRepository charactersRepository;
+  late Repositories dataRepository;
   late CharactersCubit charactersCubit;
 
   AppRouter() {
-    charactersRepository = CharactersRepository(CharactersWebServices());
-    charactersCubit = CharactersCubit(charactersRepository);
+    dataRepository = Repositories(WebServices());
+    charactersCubit = CharactersCubit(dataRepository);
   }
 
   Route? generateRoute(RouteSettings settings) {
@@ -30,11 +31,11 @@ class AppRouter {
 
       case characterDetailsScreen:
         final character = settings.arguments as CharacterModel;
-        
+
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (BuildContext context) =>
-                CharactersCubit(charactersRepository),
+               LocationsCubit(dataRepository),
             child: CharacterDetailsScreen(
               character: character,
             ),

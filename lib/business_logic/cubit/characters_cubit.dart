@@ -2,12 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../data/models/character_model.dart';
-import '../../data/repositories/characters_repo.dart';
+import '../../data/repositories/repositories.dart';
 
 part 'characters_state.dart';
 
 class CharactersCubit extends Cubit<CharactersState> {
-  final CharactersRepository charactersRepository;
+  final Repositories charactersRepository;
 
   CharactersCubit(this.charactersRepository) : super(CharactersInitial());
 
@@ -17,7 +17,8 @@ class CharactersCubit extends Cubit<CharactersState> {
       final characters = await charactersRepository.getAllCharacters();
       emit(CharactersLoaded(characters)); // Emit loaded state with characters
     } catch (e) {
-      emit(CharactersError("Failed to fetch characters")); // Emit error state on failure
+      emit(CharactersError(
+          "Failed to fetch characters")); // Emit error state on failure
     }
   }
 }
