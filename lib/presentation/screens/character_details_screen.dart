@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -21,26 +22,6 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<LocationsCubit>(context).fetchLocations();
-  }
-
-  Widget buildListLocationsView(List<LocationModel> locations) {
-    return SizedBox(
-      height: 250,
-      child: ListView.builder(
-        itemCount: locations.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: const Icon(
-              Icons.location_on,
-              color: MyColors.myYellowColor,
-            ),
-            title: Text(locations[index].name),
-            subtitle: Text(locations[index].type),
-            trailing: Text(locations[index].dimension),
-          );
-        },
-      ),
-    );
   }
 
   @override
@@ -94,8 +75,16 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    //? Animated Text
+                    //? Animated Texts
                     const SizedBox(height: 10),
+                    const Text(
+                      "All locations: ",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     BlocBuilder<LocationsCubit, LocationsState>(
                       builder: (context, state) {
                         if (state is LocationsLoading) {
@@ -125,6 +114,50 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
             ],
           ))
         ],
+      ),
+    );
+  }
+
+  Widget buildListLocationsView(List<LocationModel> locations) {
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        itemCount: locations.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: const Icon(
+              Icons.location_on,
+              color: MyColors.myGreenColor,
+            ),
+            title: AnimatedTextKit(
+              animatedTexts: [
+                WavyAnimatedText(locations[index].name,
+                    textStyle: const TextStyle(
+                      color: MyColors.myYellowColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    )),
+              ],
+              isRepeatingAnimation: true,
+            ),
+            subtitle: Text(
+              locations[index].type,
+              style: const TextStyle(
+                color: Colors.white60,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            trailing: Text(
+              locations[index].dimension,
+              style: const TextStyle(
+                color: Colors.white60,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
